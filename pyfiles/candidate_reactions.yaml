@@ -1,0 +1,126 @@
+# ============================================================================
+# Candidate Reactions for P. megaterium PHA Engineering
+# Version 2.0 — IMPROVED: Full beta-oxidation annotation + biological rationale
+# Quality Improvement Step 7 — Bioresource Technology submission
+# ============================================================================
+
+perturbation_types:
+  knockout:
+    lower_bound: 0.0
+    upper_bound: 0.0
+  upregulation:
+    fold_change: 2.0
+
+max_knockouts: 4
+max_upregulations: 3
+
+candidate_groups:
+
+  pha_pathway:
+    description: "PHA-proximal reactions — direct enzymatic steps in PHB biosynthesis"
+    reaction_ids:
+      - "bm00403"   # PHA synthase (PhaC) — polymerisation of 3HB-CoA -> PHB
+      - "bm00387"   # Acetoacetyl-CoA reductase (PhaB) — NADPH-dependent; rate-limiting
+      - "bm00401"   # 3-hydroxybutyryl-CoA dehydrogenase — reversible
+      - "bm00402"   # 3-hydroxybutyryl-CoA dehydrogenase — isoform
+      - "bm00499"   # Enoyl-CoA hydratase — channels 3HB-CoA from beta-oxidation
+      - "bm00500"   # Acetyl-CoA C-acetyltransferase (AtoB/PhaA) — condensation
+      - "bm00501"   # 3-oxoacid CoA-transferase — alternative CoA transfer
+
+  acetyl_coa_supply:
+    description: "Acetyl-CoA supply reactions — enhance flux into PHB precursor pool"
+    reaction_ids:
+      - "bm00017"   # Acetaldehyde dehydrogenase (acetylating) -> acetyl-CoA
+      - "bm00279"   # Acetyl-CoA synthetase (acs) — acetate recycling to acetyl-CoA
+      - "bm00391"   # Acetate-CoA ligase — alternative acetyl-CoA from acetate
+      - "bm00397"   # Methylmalonate-semialdehyde dehydrogenase -> ACCOA
+      - "bm00429"   # Acetoin dehydrogenase complex -> ACCOA
+
+  overflow_and_sink_competition:
+    description: "Overflow pathway reactions — reduce carbon loss to acetate/lactate"
+    reaction_ids:
+      - "bm00278"   # Lactate dehydrogenase (ldh) — competes for pyruvate/NADH
+      - "bm00374"   # Pyruvate oxidase (poxB) — direct acetyl-CoA loss to acetate
+      - "bm00375"   # Phosphate acetyltransferase (pta) — acetyl-P synthesis
+      - "bm00376"   # Acetate kinase (ackA) — acetate secretion from acetyl-P
+      - "bm00377"   # Acetyl phosphate phosphatase — irreversible acetate loss
+      - "bm00390"   # Acetate kinase (propionate branch)
+      - "bm00395"   # Phosphate acetyltransferase (propionyl branch)
+
+  tca_and_pyruvate_branch:
+    description: "TCA/pyruvate branch points — redirect carbon toward acetyl-CoA"
+    reaction_ids:
+      - "bm00277"   # Pyruvate kinase (pyk) — PEP -> pyruvate
+      - "bm00281"   # Pyruvate carboxylase (pyc) — pyruvate -> oxaloacetate
+      - "bm00282"   # PEP carboxykinase (pck) — OAA -> PEP, gluconeogenic
+      - "bm00283"   # Citrate synthase (gltA) — acetyl-CoA drain to TCA
+      - "bm00292"   # Succinyl-CoA synthetase (sucCD) — TCA
+      - "bm00293"   # Succinate dehydrogenase (sdhABCD) — TCA
+      - "bm00370"   # Malic enzyme (maeA) — malate -> pyruvate + CO2
+      - "bm00372"   # PEP carboxylase (ppc) — PEP -> OAA anaplerotic
+      - "bm00373"   # Pyruvate water dikinase (ppsA) — pyruvate -> PEP
+
+  fatty_acid_synthesis:
+    description: "FA synthesis — reduce acetyl-CoA/malonyl-CoA drain to lipids"
+    reaction_ids:
+      - "bm00471"   # Acetyl-CoA carboxylase (accABCD) — acetyl-CoA -> malonyl-CoA
+      - "bm00472"   # 3-Oxoacyl-ACP synthase III (fabH) — initiates FA elongation
+      - "bm00473"   # Malonyl-CoA:ACP transacylase (fabD) — malonyl-ACP formation
+
+  beta_oxidation:
+    description: >
+      Chain-length-specific acyl-CoA beta-oxidation cycles (C16 to C4).
+      Reactions organised into 4-enzyme cycles: acyl-CoA dehydrogenase ->
+      enoyl-CoA hydratase -> 3-hydroxyacyl-CoA dehydrogenase -> thiolase.
+      3-Hydroxyacyl-CoA dehydrogenases (bm00476,80,84,88,92,96) directly
+      compete with PhaB for the 3-hydroxybutyryl-CoA substrate.
+    active_under_glucose: ["bm00476", "bm00480", "bm00477", "bm00481", "bm00492"]
+    inactive_under_glucose: ["bm00474","bm00475","bm00478","bm00479","bm00482",
+                              "bm00483","bm00484","bm00485","bm00486","bm00487",
+                              "bm00488","bm00489","bm00490","bm00491","bm00493",
+                              "bm00494","bm00495","bm00496","bm00497","bm00498"]
+    reaction_ids:
+      - "bm00474"   # C16 acyl-CoA dehydrogenase (Palmitoyl-CoA:O2 oxidoreductase)
+      - "bm00475"   # C16 enoyl-CoA hydratase
+      - "bm00476"   # C16 3-hydroxyacyl-CoA dehydrogenase — 3HB-CoA competitor [PRIORITY KO]
+      - "bm00477"   # C16 thiolase fadA
+      - "bm00478"   # C12 acyl-CoA dehydrogenase (dodecanoyl)
+      - "bm00479"   # C12 enoyl-CoA hydratase
+      - "bm00480"   # C12 3-hydroxyacyl-CoA dehydrogenase — 3HB-CoA competitor
+      - "bm00481"   # C12 thiolase fadA
+      - "bm00482"   # C8 acyl-CoA dehydrogenase (octanoyl)
+      - "bm00483"   # C8 enoyl-CoA hydratase
+      - "bm00484"   # C8 3-hydroxyacyl-CoA dehydrogenase
+      - "bm00485"   # C8 thiolase fadA
+      - "bm00486"   # C6 acyl-CoA dehydrogenase (hexanoyl)
+      - "bm00487"   # C6 enoyl-CoA hydratase
+      - "bm00488"   # C6 3-hydroxyacyl-CoA dehydrogenase
+      - "bm00489"   # C6 thiolase fadA
+      - "bm00490"   # C4 acyl-CoA dehydrogenase (butyryl)
+      - "bm00491"   # C4 enoyl-CoA hydratase
+      - "bm00492"   # C4 3-hydroxybutyryl-CoA dehydrogenase — DIRECT PhaB competitor [TOP KO]
+      - "bm00493"   # C4 thiolase fadA
+      - "bm00494"   # Short-chain acyl-CoA dehydrogenase (general)
+      - "bm00495"   # Short-chain enoyl-CoA hydratase
+      - "bm00496"   # Short-chain 3-hydroxyacyl-CoA dehydrogenase
+      - "bm00497"   # Acetyl-CoA C-acetyltransferase / fadA (C4, atoB isoform)
+      - "bm00498"   # Very-short-chain acyl-CoA dehydrogenase
+
+  nadph_supply:
+    description: >
+      NADPH-generating reactions — cofactor supply for PhaB (acetoacetyl-CoA reductase).
+      NOVEL target group for P. megaterium PHB engineering. PPP upregulation
+      (zwf/gnd) is the highest-priority strategy to improve NADPH/NADP+ ratio.
+    priority: "HIGH — novel for P. megaterium PHB engineering"
+    reaction_ids:
+      - "bm00296"   # Glucose-6-phosphate dehydrogenase (zwf) — PPP entry, NADPH gen
+      - "bm00298"   # 6-Phosphogluconate dehydrogenase (gnd) — PPP step 2, NADPH gen
+      - "bm00286"   # Isocitrate dehydrogenase NADP+ (icd) — TCA-linked NADPH
+      - "bm01162"   # Malonate-semialdehyde dehydrogenase (acetylating) — NADPH
+      - "bm00020"   # Glutamate dehydrogenase NADP+ (gdhA) — N-assimilation NADPH
+
+  redox_balance_extension:
+    description: "Secondary NADPH/redox reactions — synergistic in multi-target designs"
+    reaction_ids:
+      - "bm00010"   # Succinate-semialdehyde dehydrogenase NADP+ (gabD) — GABA shunt
+      - "bm00215"   # Valine dehydrogenase NADP+ (vdh) — amino acid catabolism NADPH

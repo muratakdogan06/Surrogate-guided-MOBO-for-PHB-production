@@ -1,0 +1,53 @@
+# ============================================================================
+# Model Configuration — PHA Production Optimisation Pipeline
+# ============================================================================
+# EDIT THIS FILE to match the reaction / metabolite IDs in YOUR specific
+# Bacillus megaterium genome-scale model before running the pipeline.
+# ============================================================================
+
+# -- Paths (relative to project root) ----------------------------------------
+model_path: "data/raw/bmeg_original.xml"
+extended_model_path: "models/model_with_PHA.xml"
+
+# -- PHA precursor search -----------------------------------------------------
+# The pipeline tries each ID in order; first hit wins.
+# If none match, fallback_precursor_id is used.
+precursor_search_ids:
+  - "3hbcoa_c"          # 3-hydroxybutyryl-CoA (cytosol)
+  - "3hbcoa"
+  - "3ohcoa_c"
+  - "hydroxyacylcoa_c"
+  - "accoa_c"            # acetyl-CoA as last-resort
+
+fallback_precursor_id: "accoa_c"
+
+# -- PHA polymerisation reaction settings -------------------------------------
+pha_reaction_id: "DM_POLHYBU_c"
+pha_metabolite_id: "POLHYBU[c]"
+pha_metabolite_name: "Polyhydroxybutyrate"
+pha_compartment: "c"
+pha_reaction_lower_bound: 0.0
+pha_reaction_upper_bound: 1000.0
+
+# -- Key model reaction IDs --------------------------------------------------
+biomass_reaction_id: "biomass"
+glucose_exchange_id: "Re_bm01273"
+oxygen_exchange_id: "Re_bm01302"
+biomass_fraction_grid: [0.10, 0.30, 0.50, 0.70]
+
+# -- Search patterns (case-insensitive substring) ----------------------------
+biomass_search_patterns:
+  - "biomass"
+  - "BIOMASS"
+  - "growth"
+  - "bio1"
+
+glucose_exchange_patterns:
+  - "EX_glc__D_e"
+  - "EX_glc_D_e"
+  - "EX_glc_e"
+  - "EX_glucose_e"
+
+oxygen_exchange_patterns:
+  - "EX_o2_e"
+  - "EX_o2"

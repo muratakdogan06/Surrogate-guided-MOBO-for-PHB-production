@@ -1,0 +1,75 @@
+# ============================================================================
+# Environmental Conditions for FBA Simulations
+# Version 2.0 — EXPANDED: Added glycerol, acetate, and mixed conditions
+# Quality Improvement Step 2 — Bioresource Technology submission
+# ============================================================================
+# Each condition maps exchange-reaction IDs to [lower_bound, upper_bound].
+# An empty overrides dict means "use model defaults" (aerobic, glucose-replete).
+# SUSTAINABILITY NOTE: Glycerol (biodiesel waste) and acetate (VFA from
+# acidogenic fermentation) are the primary low-cost feedstocks for
+# P. megaterium PHB production (Cal et al. 2025, PLoS ONE).
+# ============================================================================
+
+conditions:
+
+  # ---- Original three conditions (preserved) ---------------------------------
+  base:
+    description: "Aerobic, glucose-replete (model defaults) — reference condition"
+    carbon_source: "glucose"
+    overrides: {}
+
+  low_oxygen:
+    description: "Micro-aerobic on glucose — 10% of normal O2 uptake"
+    carbon_source: "glucose"
+    overrides:
+      EX_o2_e: [-2.0, 1000.0]
+
+  low_carbon:
+    description: "Carbon-limited glucose — 50% of normal glucose uptake"
+    carbon_source: "glucose"
+    overrides:
+      EX_glc__D_e: [-5.0, 0.0]
+
+  # ---- NEW SUSTAINABLE FEEDSTOCK CONDITIONS (Step 2) -------------------------
+  glycerol_aerobic:
+    description: >
+      Aerobic growth on glycerol — primary sustainable waste feedstock
+      from biodiesel manufacturing (~1g glycerol per 10g biodiesel produced).
+      Directly supports the 'sustainable' claim in the paper title.
+      Reference: Cal et al. (2025) PLoS ONE, DOI: 10.1371/journal.pone.0322838
+    carbon_source: "glycerol"
+    overrides:
+      Re_bm01273: [0.0, 0.0]      # Close glucose exchange
+      EX_glyc_e:  [-10.0, 1000.0] # Open glycerol exchange at -10 mmol/gDW/h
+
+  acetate_aerobic:
+    description: >
+      Aerobic growth on acetate — volatile fatty acid (VFA) feedstock from
+      acidogenic fermentation of organic waste streams. Acetate enters
+      metabolism via acetyl-CoA synthetase (bm00279) directly feeding PHB.
+      Reference: Vu et al. (2021) Bioengineered, 12:2480-2498
+    carbon_source: "acetate"
+    overrides:
+      Re_bm01273: [0.0, 0.0]      # Close glucose exchange
+      EX_ac_e:    [-10.0, 1000.0] # Open acetate exchange
+
+  glycerol_low_oxygen:
+    description: >
+      Micro-aerobic glycerol — models biodiesel-waste glycerol fermentation
+      in oxygen-limited bioreactor conditions, representative of large-scale
+      fed-batch PHB production. Most industrially relevant condition.
+    carbon_source: "glycerol"
+    overrides:
+      Re_bm01273: [0.0, 0.0]
+      EX_glyc_e:  [-10.0, 1000.0]
+      EX_o2_e:    [-2.0, 1000.0]
+
+  mixed_glucose_glycerol:
+    description: >
+      Co-feeding of glucose and glycerol — models molasses + glycerol
+      mixed feedstock strategy. Allows comparison of carbon routing
+      preferences under dual-substrate conditions.
+    carbon_source: "glucose_glycerol_mix"
+    overrides:
+      Re_bm01273: [-5.0, 0.0]     # Half glucose
+      EX_glyc_e:  [-5.0, 1000.0]  # Half glycerol equivalent

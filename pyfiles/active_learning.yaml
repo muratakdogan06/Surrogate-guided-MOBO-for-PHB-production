@@ -1,0 +1,79 @@
+# ============================================================================
+# Active Learning / Bayesian Optimisation Configuration
+# Version 2.0 — IMPROVED: 10 seeds, sensitivity grid, extended benchmarking
+# Quality Improvement Steps 5 & 6 — Bioresource Technology submission
+# ============================================================================
+
+# -- Initial random pool ------------------------------------------------------
+initial_random_samples: 5
+
+# -- AL loop ------------------------------------------------------------------
+n_iterations: 20
+batch_size: 5
+
+# Acquisition function
+acquisition: "ucb"
+ucb_kappa: 2.5         # Justified by sensitivity analysis (Step 4)
+
+# -- Surrogate ----------------------------------------------------------------
+surrogate_model: "gradient_boosting"
+n_estimators: 200
+max_depth: 8
+ensemble_size: 5
+
+# -- Diversity-aware batch proposal -------------------------------------------
+diversity_lambda: 0.35  # Justified by sensitivity analysis (Step 4)
+
+# -- Condition / epsilon-constraint regime ------------------------------------
+condition_name: "base"
+biomass_fraction_required: 0.30
+
+# -- Biomass-aware acquisition ------------------------------------------------
+biomass_min_for_acq: 0.07
+biomass_penalty_lambda: 15.0  # Justified by sensitivity analysis (Step 4)
+
+# -- Baselines ----------------------------------------------------------------
+run_random_baseline: true
+run_greedy_baseline: true
+run_exploitation_baseline: true
+
+# -- Convergence ---------------------------------------------------------------
+convergence_window: 10
+convergence_tol: 0.0002
+
+# -- Pareto -------------------------------------------------------------------
+pareto_n_points: 500
+
+# -- Reproducibility — IMPROVED: 10 seeds for statistical power ---------------
+# Step 6: Increased from 5 to 10 seeds.
+# Rationale: With n=10, Wilcoxon signed-rank test achieves ~80% power
+# to detect medium effect sizes (Cohen's d ~0.6) at alpha=0.05.
+# Reference: Heckmann et al. (2023) ACS Synthetic Biology
+random_seed: 42
+n_seeds: 10
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+use_global_pareto_reference: true
+
+# -- Hyperparameter sensitivity grid (Step 4) ----------------------------------
+# Used by 09_hyperparameter_sensitivity.py for one-at-a-time (OAT) analysis
+sensitivity_analysis:
+  enabled: true
+  n_seeds_per_config: 3    # 3 seeds per configuration for efficiency
+  parameters:
+    ucb_kappa:
+      default: 2.5
+      grid: [1.0, 1.5, 2.5, 3.5, 5.0]
+      rationale: "Controls exploration-exploitation; kappa=2.5 is standard"
+    diversity_lambda:
+      default: 0.35
+      grid: [0.0, 0.10, 0.35, 0.60, 1.0]
+      rationale: "Prevents redundant batch proposals"
+    biomass_penalty_lambda:
+      default: 15.0
+      grid: [0.0, 5.0, 15.0, 30.0, 50.0]
+      rationale: "Penalizes non-viable designs in acquisition"
+    biomass_min_for_acq:
+      default: 0.07
+      grid: [0.03, 0.05, 0.07, 0.10, 0.15]
+      rationale: "Viability threshold for growth-compatible designs"
