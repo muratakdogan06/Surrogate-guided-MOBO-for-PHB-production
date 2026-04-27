@@ -1,8 +1,6 @@
-# Active Learning–Guided Metabolic Pathway Optimisation for PHA Production in *Bacillus megaterium*
+# Surrogate-guided multi objective Bayesian optimization for growth-coupled polyhydroxybutyrate production in Priestia megaterium DSM319*
 
-> **Full title:** Active learning–guided metabolic pathway optimisation for
-> polyhydroxyalkanoate (PHA) production in *Bacillus megaterium* using
-> genome-scale metabolic modelling and machine learning.
+> **Full title:** urrogate-guided multi objective Bayesian optimization for growth-coupled polyhydroxybutyrate production in Priestia megaterium DSM319
 
 ---
 
@@ -11,23 +9,10 @@
 This repository provides a complete, reproducible computational pipeline that
 couples **genome-scale metabolic modelling (GEM / FBA)** with **machine-learning
 surrogate models** and a **Bayesian-style active-learning loop** to
-systematically optimise polyhydroxyalkanoate (PHA) production in *Bacillus
+systematically optimise polyhydroxybutyrate (PHB) production in *Priestia
 megaterium*.
 
-### Key Capabilities
 
-| Capability | Method |
-|---|---|
-| Automatic model extension | Adds a PHA polymerisation sink + objective to any *B. megaterium* SBML model |
-| Design-space generation | Combinatorial knockouts & up-regulations across 7 pathway groups |
-| FBA simulation engine | Two-stage optimisation (biomass-constrained PHA maximisation) under base / low-O₂ / low-C conditions |
-| Surrogate modelling | Random Forest & Gradient Boosting (R², RMSE, MAE) |
-| Active learning | UCB / EI / pure-exploration acquisition with convergence detection |
-| Multi-objective analysis | Pareto frontier + 2-D hypervolume metric |
-| Interpretability | SHAP TreeExplainer feature-importance ranking |
-| Flux comparison | Pathway-level flux maps — wild-type vs best-optimised strain |
-
----
 
 ## 2. Installation
 
@@ -122,21 +107,7 @@ Place your SBML file at the path set in `configs/model_config.yaml → model_pat
 
 ---
 
-## 7. Manuscript Figure Mapping
-
-| Figure | File | Source |
-|--------|------|--------|
-| **1** — Pipeline workflow | `results/figures/figure1_workflow.png` | Script 10 |
-| **2** — Design-space landscape | `results/figures/figure2_design_landscape.png` | Script 10 |
-| **3** — Surrogate performance | `results/figures/figure3_surrogate_performance.png` | Script 10 |
-| **4** — AL efficiency | `results/figures/figure4_active_learning.png` | Script 10 |
-| **5** — Pareto frontier | `results/figures/figure5_pareto.png` | Script 07 / 10 |
-| **6** — SHAP interpretation | `results/figures/figure6_shap_summary.png` | Script 08 |
-| **7** — Flux rerouting | `results/figures/figure7_flux_rerouting.png` | Script 09 |
-
----
-
-## 8. Project Structure
+## 7. Project Structure
 
 ```
 makale-2/
@@ -189,21 +160,11 @@ makale-2/
 
 ---
 
-## 9. Limitations
 
-1. **Model dependency** — Reaction IDs vary across GEM versions; update `model_config.yaml`.
-2. **Simplified PHA sink** — The stoichiometry is a 1 : 1 drain; refine for scl- vs mcl-PHA specificity.
-3. **Surrogate fidelity** — ML predictions approximate FBA; top candidates should be independently verified.
-4. **Combinatorial cap** — Design space is sub-sampled for tractability (`max_total` parameter).
-5. **GB uncertainty** — Gradient Boosting uncertainty uses staged-predict variance, not a Bayesian posterior.
+## 8. Citation
 
----
-
-## 10. Citation
-
-> [Author(s)]. Active learning–guided metabolic pathway optimisation for
-> polyhydroxyalkanoate (PHA) production in *Bacillus megaterium* using
-> genome-scale metabolic modelling and machine learning. *[Journal]*, [Year].
+> [Akdoğan, M]. Surrogate-guided multi objective Bayesian optimization for growth-coupled
+> polyhydroxybutyrate production in *Priestia megaterium* DSM319 *[Metabolic Engineering]*, [2026].
 > DOI: [pending].
 
 ---
