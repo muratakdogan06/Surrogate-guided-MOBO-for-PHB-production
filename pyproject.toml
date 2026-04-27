@@ -1,0 +1,44 @@
+# ============================================================================
+# pyproject.toml — PHA Production Optimisation Pipeline
+# ============================================================================
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phaopt"
+version = "1.0.0"
+description = "Active learning–guided metabolic pathway optimisation for PHA production in Bacillus megaterium"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "PHA Optimisation Team"},
+]
+
+dependencies = [
+    "cobra>=0.29.0",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "scikit-learn>=1.3",
+    "shap>=0.42.0",
+    "matplotlib>=3.7",
+    "pyarrow>=14.0",
+    "joblib>=1.3",
+    "PyYAML>=6.0",
+    "xgboost>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 99
+
+[tool.ruff]
+line-length = 99
+target-version = "py310"
