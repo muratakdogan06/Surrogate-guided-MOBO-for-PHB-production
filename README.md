@@ -1,6 +1,6 @@
-# Surrogate-guided multi objective Bayesian optimization for growth-coupled polyhydroxybutyrate production in Priestia megaterium DSM319*
+# Surrogate-guided MOBO for PHB production
 
-> **Full title:** urrogate-guided multi objective Bayesian optimization for growth-coupled polyhydroxybutyrate production in Priestia megaterium DSM319
+> **Full title:** Surrogate-guided multi objective Bayesian optimization for growth-coupled polyhydroxybutyrate production in Priestia megaterium DSM319
 
 ---
 
