@@ -1,0 +1,103 @@
+# ============================================================================
+# Active Learning / Bayesian Optimisation Configuration
+# Version 3.0 — MC-EHVI acquisition replacing UCB
+# Multi-objective: PHB flux + biomass flux co-optimised via hypervolume
+# Reference: Daulton et al. (2020) NeurIPS — Differentiable Expected
+#            Hypervolume Improvement for Parallel Multi-Objective BO
+# ============================================================================
+
+# -- Initial random pool ------------------------------------------------------
+initial_random_samples: 5
+
+# -- AL loop ------------------------------------------------------------------
+n_iterations: 20
+batch_size: 5
+
+# Acquisition function
+acquisition: "mc_ehvi"
+
+# Monte Carlo samples for EHVI approximation.
+# 256 balances accuracy and cost for GBR ensembles (Daulton et al. 2020).
+# Increase to 512/1024 for higher-fidelity estimates at greater cost.
+n_mc_samples: 256
+
+# Reference point for hypervolume computation.
+# Both objectives (PHB flux, biomass flux) are non-negative FBA fluxes,
+# so the origin is a valid and conservative reference point.
+ehvi_ref_point: [0.0, 0.0]
+
+# -- Surrogate ----------------------------------------------------------------
+# XGBoost: R²=0.9972 (PHA), R²=0.9909 (biomass), ~450× faster than GBR.
+# See 05b_compare_surrogates benchmark results.
+surrogate_model: "xgboost"
+n_estimators: 200
+max_depth: 8
+ensemble_size: 5       # Separate ensembles for PHB and biomass objectives
+
+# -- Diversity-aware batch proposal -------------------------------------------
+diversity_lambda: 0.35  # Justified by sensitivity analysis (Step 4)
+
+# -- Condition / epsilon-constraint regime ------------------------------------
+condition_name: "base"
+biomass_fraction_required: 0.30
+
+# -- Biomass viability threshold -----------------------------------------------
+# Used for post-hoc filtering of best-viable-PHA metric in tracking.
+# NOT used as an acquisition penalty — under MC-EHVI, biomass is a
+# co-optimised objective, so growth-coupled designs are naturally favoured.
+biomass_min_for_acq: 0.07
+
+# -- Legacy UCB / penalty parameters (baseline comparisons only) ---------------
+# These are NOT used by the MC-EHVI acquisition loop. Retained for the
+# exploitation baseline (kappa=0 single-objective) and backward compatibility.
+ucb_kappa: 2.5
+biomass_penalty_lambda: 15.0
+
+# -- Baselines ----------------------------------------------------------------
+run_random_baseline: true
+run_greedy_baseline: true
+run_exploitation_baseline: true
+
+# -- Convergence ---------------------------------------------------------------
+# Under MC-EHVI, convergence is measured on hypervolume rather than
+# best single-objective PHA flux.
+convergence_window: 10
+convergence_tol: 0.0002
+
+# -- Pareto -------------------------------------------------------------------
+pareto_n_points: 500
+
+# -- Reproducibility — 10 seeds for statistical power --------------------------
+# Rationale: With n=10, Wilcoxon signed-rank test achieves ~80% power
+# to detect medium effect sizes (Cohen's d ~0.6) at alpha=0.05.
+# Reference: Heckmann et al. (2023) ACS Synthetic Biology
+random_seed: 42
+n_seeds: 10
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+use_global_pareto_reference: true
+
+# -- Hyperparameter sensitivity grid -------------------------------------------
+# Used by 09_hyperparameter_sensitivity.py for one-at-a-time (OAT) analysis.
+# Updated for MC-EHVI: ucb_kappa and biomass_penalty_lambda replaced by
+# n_mc_samples and ehvi_ref_point sensitivity.
+sensitivity_analysis:
+  enabled: true
+  n_seeds_per_config: 3    # 3 seeds per configuration for efficiency
+  parameters:
+    n_mc_samples:
+      default: 256
+      grid: [64, 128, 256, 512, 1024]
+      rationale: "MC fidelity vs cost; 256 is the accuracy-cost sweet spot"
+    diversity_lambda:
+      default: 0.35
+      grid: [0.0, 0.10, 0.35, 0.60, 1.0]
+      rationale: "Prevents redundant batch proposals in EHVI-ranked batches"
+    biomass_min_for_acq:
+      default: 0.07
+      grid: [0.03, 0.05, 0.07, 0.10, 0.15]
+      rationale: "Viability threshold for best-viable-PHA tracking metric"
+    ensemble_size:
+      default: 5
+      grid: [3, 5, 7, 10]
+      rationale: "Controls predictive-uncertainty width fed into EHVI sampling"
